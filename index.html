@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="15 題測出你在台灣政治光譜上的顏色：小粉紅、深藍、淺藍、藍皮綠骨、中間、小草、綠皮藍骨、淺綠、深綠、樹懶。">
+<meta property="og:title" content="你是什麼顏色的台灣人？">
+<meta property="og:description" content="15 題測出你的政治顏色，拿一張專屬綽號卡。十種顏色都會被吐槽。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nosmokeagain.github.io/2026colorcard/">
+<meta property="og:image" content="https://nosmokeagain.github.io/2026colorcard/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#f3f0ea">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);box-sizing:border-box}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>政治顏色卡</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: single column app, color-spectrum identity quiz. Intro → one question per screen with 4 stacked answers → result: generated trading-card image (saveable), axis readout, all types gallery. Card-collecting vibe: chunky outlines, sticker shadows. */
+:root{
+  --bg:#f3f0ea; --paper:#ffffff; --ink:#1c1b22; --mute:#6c6a73; --rule:#dedad2; --accent:#ff5a3c; --hl:#fff1c2;
+  --f-body:"Noto Sans TC",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15141a;--paper:#211f28;--ink:#f1eee8;--mute:#a19ea8;--rule:#36333f;--accent:#ff7a5e;--hl:#3a3420;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#15141a;--paper:#211f28;--ink:#f1eee8;--mute:#a19ea8;--rule:#36333f;--accent:#ff7a5e;--hl:#3a3420;color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body)}
+.wrap{max-width:480px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:22px 40px;display:grid;gap:16px}
+h1{font:900 40px/1.1 var(--f-body);margin:0;letter-spacing:.01em;text-wrap:balance}
+h1 em{font-style:normal;background:var(--accent);color:#fff;padding:0 8px;border-radius:8px;display:inline-block;transform:rotate(-2deg)}
+.lead{margin:0;color:var(--mute);font-size:15px;line-height:1.7}
+.mascots{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.spec{display:flex;flex-wrap:wrap;gap:6px}
+.spec span{font:700 12px var(--f-body);color:#fff;padding:4px 9px;border-radius:999px;text-shadow:0 1px 0 #0004}
+.mascots canvas{width:100%;height:auto;aspect-ratio:1;max-width:100%}
+.btn{font:900 18px var(--f-body);border:2.5px solid var(--ink);border-radius:14px;padding:14px;background:var(--accent);color:#fff;cursor:pointer;box-shadow:4px 4px 0 var(--ink);touch-action:manipulation}
+.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+.btn:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.btn.ghost{background:var(--paper);color:var(--ink)}
+.note{font-size:12px;color:var(--mute);line-height:1.6;margin:0}
+.prog{display:flex;align-items:center;gap:10px;font:700 13px var(--f-body);color:var(--mute);padding-right:52px}
+.prog .trk{flex:1;height:8px;background:var(--rule);border-radius:4px;overflow:hidden}
+.prog .trk i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.q{font:900 23px/1.45 var(--f-body);margin:4px 0 0;text-wrap:balance}
+.opts{display:grid;gap:10px}
+.opt{font:500 16px/1.5 var(--f-body);text-align:left;border:2px solid var(--ink);border-radius:12px;background:var(--paper);color:var(--ink);padding:13px 14px;cursor:pointer;
+  box-shadow:3px 3px 0 var(--ink);display:grid;grid-template-columns:26px 1fr;gap:8px;align-items:start;animation:in .3s cubic-bezier(.2,1.3,.5,1) backwards}
+.opt:nth-child(2){animation-delay:.05s}.opt:nth-child(3){animation-delay:.1s}.opt:nth-child(4){animation-delay:.15s}
+@keyframes in{from{transform:translateY(12px);opacity:0}}
+.opt b{font:900 16px var(--f-body);color:var(--accent)}
+@media (hover:hover){.opt:hover:not(:disabled){background:var(--hl)}}
+.opt:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.opt:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.back{justify-self:start;background:none;border:0;color:var(--mute);font:500 14px var(--f-body);cursor:pointer;padding:4px 0}
+.cardimg{width:100%;max-width:100%;border-radius:18px;box-shadow:0 18px 40px -20px #0007;display:block;animation:flip .6s cubic-bezier(.2,1.3,.5,1)}
+@keyframes flip{from{transform:perspective(800px) rotateY(80deg) scale(.8);opacity:0}}
+.save{font:500 13px var(--f-body);color:var(--mute);text-align:center;margin:0}
+.axes{background:var(--paper);border:2px solid var(--ink);border-radius:14px;padding:14px;display:grid;gap:12px}
+.ax{display:grid;gap:4px;font-size:13px}
+.ax .ends{display:flex;justify-content:space-between;color:var(--mute);font-size:12px}
+.ax .trk{position:relative;height:10px;border-radius:5px;background:linear-gradient(90deg,#1f3f8f,#6b93d6 30%,#d9d6cf 50%,#8fcf8a 70%,#147a4c)}
+.ax .trk.e{background:linear-gradient(90deg,#c9c4bb,#ff5a3c)} .ax .trk.r{background:linear-gradient(90deg,#c9c4bb,#8bbf3f)}
+.ax .dot{position:absolute;top:50%;width:18px;height:18px;border-radius:50%;background:var(--paper);border:3px solid var(--ink);transform:translate(-50%,-50%);transition:left .6s cubic-bezier(.2,1.3,.5,1)}
+.ax b{font:700 14px var(--f-body)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+h2{font:900 20px var(--f-body);margin:8px 0 0}
+.gal{display:grid;gap:10px}
+.gi{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;background:var(--paper);border:1.5px solid var(--rule);border-radius:12px;padding:10px}
+.gi canvas{width:56px;height:56px}
+.gi b{font:900 16px var(--f-body)} .gi span{font-size:13px;color:var(--mute);line-height:1.5;display:block}
+.gi.me{border:2.5px solid var(--ink);background:var(--hl)}
+#shareText{-webkit-user-select:text;user-select:text;width:100%;box-sizing:border-box;font:500 15px/1.6 var(--f-body);color:var(--ink);background:var(--bg);border:1.5px solid var(--rule);border-radius:10px;padding:10px 12px;resize:vertical}
+#shareText:focus-visible{outline:2px solid var(--accent)}
+.sharebox{background:var(--paper);border:2px solid var(--ink);border-radius:14px;padding:14px;display:grid;gap:10px}
+.shead{display:grid;gap:8px}
+.shead b{font:900 16px var(--f-body)}
+.vtabs{display:grid;grid-template-columns:repeat(3,1fr);border:1.5px solid var(--ink);border-radius:999px;overflow:hidden;width:100%}
+.srow{display:flex;gap:10px}.srow .btn{flex:1}
+.vtabs button{font:700 12px var(--f-body);background:transparent;border:0;color:var(--ink);padding:6px 10px;cursor:pointer}
+.vtabs button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.vtabs button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.hint{margin:0;font-size:12px;color:var(--mute)}
+.optout{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--mute)}
+.optout input{width:18px;height:18px;accent-color:var(--accent)}
+.toast{margin:0;font:700 13px var(--f-body);color:var(--accent);min-height:1.2em;opacity:0}
+.toast.on{animation:toast 2.4s forwards}
+@keyframes toast{8%,80%{opacity:1}100%{opacity:0}}
+.mute{position:fixed;right:calc(12px + env(safe-area-inset-right,0px));top:calc(12px + env(safe-area-inset-top,0px));z-index:30;width:40px;height:40px;border-radius:50%;border:2px solid var(--ink);background:var(--paper);color:var(--ink);display:grid;place-items:center;cursor:pointer;padding:0;box-shadow:2px 2px 0 var(--ink)}
+.mute svg{width:18px;height:18px}
+.fxl{position:fixed;inset:0;pointer-events:none;z-index:25;overflow:hidden}
+.cf{position:absolute;top:-14px;width:9px;height:14px;border-radius:2px;animation:fall var(--d) cubic-bezier(.25,.6,.5,1) forwards}
+@keyframes fall{to{transform:translate(var(--x),105vh) rotate(var(--r))}}
+.sp{position:absolute;width:8px;height:8px;border-radius:50%;animation:sp .5s ease-out forwards}
+@keyframes sp{to{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
+.orb{width:22px;height:22px;border-radius:50%;border:2px solid var(--ink);flex:none;transition:background .5s;animation:orb 1.6s ease-in-out infinite}
+@keyframes orb{50%{transform:scale(1.15)}}
+.orbtxt{margin:-6px 0 0;font:500 12px var(--f-body);color:var(--mute)}
+.qwrap{display:grid;gap:14px;animation:qin .35s cubic-bezier(.2,1.2,.5,1)}
+@keyframes qin{from{transform:translateX(30px);opacity:0}}
+.opt.chosen{background:var(--ink);color:var(--paper);transform:scale(1.03)}
+.opt.chosen b{color:var(--hl)}
+.opt:disabled{cursor:default}
+.pop{animation:popin .5s cubic-bezier(.2,1.6,.5,1) backwards}
+@keyframes popin{from{transform:scale(0) rotate(-20deg)}}
+.calc{min-height:60vh;display:grid;place-items:center;align-content:center;gap:18px}
+.wheel{width:150px;height:150px;border-radius:50%;border:4px solid var(--ink);box-shadow:4px 4px 0 var(--ink);animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.calctxt{font:900 18px var(--f-body);margin:0}
+.bigname{font:900 34px/1.1 var(--f-body);margin:-6px 0 0;animation:popin .6s cubic-bezier(.2,1.6,.5,1) .2s backwards}
+@media (prefers-reduced-motion:reduce){.opt,.cardimg,.qwrap,.pop,.bigname,.orb,.wheel{animation:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap" id="app"></div>
+
+<script>
+(()=>{
+const app=document.getElementById('app');
+/* ---------- types: ten colors along the identity spectrum + hybrids; every type roasted at the same strength, on behavior not identity ---------- */
+const TYPES={
+ pink:{color:'粉紅',name:'小粉紅',m:'panda',hex:'#e2669b',tag:'祖國強大派',
+  traits:['抖音演算法比你媽還懂你','覺得對岸高鐵比台灣好太多，雖然沒搭過','留言最愛用「灣灣」開頭'],quote:'格局打開',enemy:'深綠・青鳥'},
+ dblue:{color:'深藍',name:'梅花',m:'plum',hex:'#1f3f8f',tag:'我是在台灣的中國人',
+  traits:['國慶煙火必看，國歌會跟著唱完','Line 群組轉發健康文和政治文一比一','覺得以前的台灣比較有秩序'],quote:'以前不是這樣的',enemy:'深綠・青鳥'},
+ lblue:{color:'淺藍',name:'撲滿',m:'pig',hex:'#4c7fd1',tag:'只看荷包投票的中華民國派',
+  traits:['覺得兩岸和氣才有錢賺','政見只看減稅、補助和房價那三行','嘴上說不藍不綠，投票方向十年沒變'],quote:'意識形態不能當飯吃',enemy:'淺綠・番薯'},
+ bskin:{color:'藍皮綠骨',name:'變色龍',m:'cham',hex:'#3d6fc4',hex2:'#2f9e6e',tag:'投藍營，骨子裡是台灣優先',
+  traits:['家裡都投藍，自己蓋章時手會抖一下','支持國民黨，但被叫中國人會生氣','藍營說你是臥底，綠營說你是叛徒'],quote:'我是中華民國派，但台灣優先',enemy:'小粉紅'},
+ mid:{color:'中間',name:'貓頭鷹',m:'owl',hex:'#9a8460',tag:'自稱理性中立的那個人',
+  traits:['每次說要研究政見，投票前一晚才問朋友投誰','藍的朋友覺得你偏綠，綠的朋友覺得你偏藍','最常說「看人不看黨」'],quote:'我是理性中立的',enemy:'所有陣營的熱血親友'},
+ white:{color:'白',name:'小草',m:'grass',hex:'#2aa3a3',tag:'藍綠都爛派',
+  traits:['任何新聞都能接到「兩黨一樣爛」','YouTube 政論直播可以看到半夜兩點','相信總有一天會有人改變政治'],quote:'藍綠都一樣，醒醒吧',enemy:'深綠・青鳥'},
+ gskin:{color:'綠皮藍骨',name:'變色龍',m:'cham',hex:'#2f9e6e',hex2:'#3d6fc4',tag:'投綠營，但不想吵統獨',
+  traits:['支持民進黨，但覺得兩岸生意還是要做','聽到「台獨」兩個字會有點緊張','綠營說你不夠綠，藍營說你是假中立'],quote:'維持現狀就好啦',enemy:'深綠・青鳥'},
+ lgreen:{color:'淺綠',name:'番薯',m:'yam',hex:'#5fb35d',tag:'我是台灣人，國家就叫台灣',
+  traits:['出國被問 Chinese? 會笑著糾正 Taiwanese','投票一定去，造勢晚會一定不去','政治熱情只在選前一週開機'],quote:'本來就是兩個國家，有什麼好吵的',enemy:'淺藍・撲滿'},
+ dgreen:{color:'深綠',name:'青鳥',m:'bird',hex:'#147a4c',tag:'熬夜守護民主的鍵盤戰士',
+  traits:['立法院外面坐過，Threads 個簽有一隻鳥','看到「大陸」兩個字會自動校正成「中國」','轉發速度比記者發稿還快'],quote:'這不是藍綠，是民主與威權',enemy:'白・小草'},
+ gray:{color:'灰',name:'樹懶',m:'sloth',hex:'#7d848c',tag:'政治？可以吃嗎',
+  traits:['選舉日在你心中等於連假','所有群組在選前都已關靜音','只關心捷運什麼時候通、房價什麼時候降'],quote:'誰選上我還不是要上班',enemy:'每天傳政治文的長輩'}
+};
+const ORDER=['pink','dblue','lblue','bskin','mid','white','gskin','lgreen','dgreen','gray'];
+
+/* ---------- question bank: a = 國家認同(獨+/統−), b = 政黨(綠+/藍−), e = 政治熱度, r = 反兩黨, k = 親中
+   Each play draws a fixed quota per category, shuffles question and option order, and avoids recently seen questions.
+   Scores are normalized by what the drawn set could reach, so any draw is judged on the same scale. ---------- */
+const BANK={
+ id:[
+  ['I1','你會怎麼介紹自己？',[['我是在台灣的中國人',{a:-3}],['我是在台灣的中華民國人',{a:-2}],['我是台灣人，國家是中華民國台灣',{a:0}],['我是台灣人，我的國家叫台灣',{a:2}],['我是台灣國的台灣人',{a:3,e:1}]]],
+  ['I2','出國被問 Where are you from? 你回答？',[['China',{a:-2,k:1}],['Taiwan, Republic of China',{a:-1}],['Taiwan',{a:1}],['Taiwan. Not China.',{a:2,e:1}]]],
+  ['I3','兩岸的未來，你比較希望？',[['早晚要統一，越快越好',{a:-2,k:3}],['先和平交流，統一以後再談',{a:-1,b:-1}],['維持現狀，以後再說',{}],['台灣已經是獨立國家，維持就好',{a:1}],['正名制憲，讓世界都承認',{a:2,e:1}]]],
+  ['I4','講到對岸，你嘴巴最常講？',[['中國',{a:2}],['大陸、對岸',{a:-1}],['祖國',{a:-2,k:3}],['看場合，跟長輩講大陸，跟朋友講中國',{}]]],
+  ['I5','國慶日那天，你通常在幹嘛？',[['看國慶煙火或轉播，很有感',{a:-1,b:-1,e:1}],['放假補眠',{e:-1}],['覺得「國慶」的定義應該重新討論',{a:1,e:1}],['要先查今年有沒有連假',{e:-2}]]],
+  ['I6','看到青天白日滿地紅國旗，你？',[['很有感情，那是我的國家',{a:-1}],['那是中華民國國旗，我比較想要台灣自己的旗',{a:2}],['國際比賽看到會激動，其他時候沒感覺',{}],['沒特別想法',{e:-1}]]],
+  ['I7','護照封面印著 REPUBLIC OF CHINA，你覺得？',[['本來就該這樣',{a:-2}],['TAIWAN 印大一點就好',{a:1}],['應該只印 TAIWAN',{a:2}],['能出國就好',{e:-1}]]],
+  ['I8','國際賽事，你都怎麼叫我們的隊伍？',[['中華隊',{a:-1}],['台灣隊',{a:1}],['看轉播怎麼喊就跟著喊',{}],['我不看比賽',{e:-1}]]],
+  ['I9','歷史課本應該怎麼教？',[['中國史為主，那是我們的根',{a:-2}],['台灣史和東亞史並重',{a:1}],['台灣史為主',{a:2}],['早就忘光了',{e:-1}]]],
+  ['I10','「九二共識」你覺得？',[['兩岸和平的基礎',{a:-2,b:-1}],['根本不存在',{a:2,b:1}],['不太清楚內容',{e:-1}],['名詞而已，生活過得好比較重要',{}]]]
+ ],
+ cn:[
+  ['C1','你對中國的感覺比較接近？',[['很嚮往，那邊發展得比台灣好',{a:-1,k:2}],['可以交流、做生意，不用敵對',{a:-1}],['保持距離比較安全',{a:1}],['就是威脅台灣的國家',{a:2,e:1}]]],
+  ['C2','你最常滑的影音 App？',[['抖音、小紅書',{k:2}],['YouTube、IG',{}],['Threads、PTT',{e:1}],['電視比較多',{e:-1}]]],
+  ['C3','看到共機繞台的新聞，你？',[['是台灣挑釁在先',{a:-2,k:2}],['兩岸要多對話，才不會打起來',{a:-1,b:-1}],['擔心，但覺得不會真的打',{}],['很擔心，國防要加強',{a:1}],['習慣了，滑過去',{e:-1}]]],
+  ['C4','有機會去對岸工作或發展，你？',[['很想去，機會比台灣多',{a:-1,k:2}],['條件好會考慮，畢竟同文同種',{a:-1}],['去玩可以，不會想住',{}],['不會去，怕出事',{a:1}],['沒想過',{e:-1}]]],
+  ['C5','「統一後生活會更好」，你同意嗎？',[['同意',{a:-2,k:3}],['要統一也是中華民國統一',{a:-2}],['不確定',{}],['不同意',{a:1}],['完全不能接受',{a:2,e:1}]]],
+  ['C6','對岸網紅說「台灣是中國的一部分」，你？',[['說得沒錯',{a:-2,k:3}],['我們是中華民國，不是你們',{a:-1}],['聽聽就好',{}],['留言反駁',{a:1,e:1}],['直接檢舉',{a:2,e:1}]]]
+ ],
+ pt:[
+  ['P1','上次大選，你的政黨票投給？',[['國民黨',{b:-3}],['民進黨',{b:3}],['民眾黨',{r:3}],['沒投，或投小黨',{e:-1}]]],
+  ['P2','你最常看的新聞來源？',[['三立、民視、自由時報',{b:2,e:1}],['TVBS、聯合報、中時',{b:-2,e:1}],['YouTube 政論直播、Podcast',{e:1,r:1}],['只看社群上別人分享的',{e:-1}]]],
+  ['P3','對兩大黨的感覺？',[['民進黨有問題，但比較能信任',{b:2}],['國民黨比較穩，至少經濟和兩岸會顧',{b:-2}],['兩個都爛，台灣需要第三勢力',{r:2,e:1}],['都差不多，懶得比',{e:-2}]]],
+  ['P4','核能發電？',[['非核家園，核廢料沒地方放',{b:1}],['該延役，缺電才是大問題',{b:-1,r:1}],['聽專家的，我真的不懂',{e:-1}],['不要停電就好',{}]]],
+  ['P5','2024 年立法院外的國會改革爭議，你當時？',[['有去現場，或每天追進度',{b:2,e:2}],['覺得國會改革本來就該做，抗議太誇張',{b:-2,e:1}],['兩邊都在演',{r:2}],['那是什麼？',{e:-2}]]],
+  ['P6','你家長輩通常投給？',[['國民黨',{b:-1}],['民進黨',{b:1}],['一半一半，吃飯會吵',{e:1}],['家裡不談政治',{e:-1}]]],
+  ['P7','看到「台灣價值」這四個字，你？',[['認同，這很重要',{b:2,a:1}],['覺得是政治操作',{b:-2}],['每個黨都在用，聽聽就好',{r:1}],['不知道指什麼',{e:-1}]]],
+  ['P8','物價、房價一直漲，你覺得該怪誰？',[['執政的民進黨',{b:-2}],['全球通膨，不能全怪政府',{b:2}],['兩黨都有責任',{r:2}],['本來就會漲，習慣了',{e:-1}]]]
+ ],
+ ht:[
+  ['H1','選舉期間，你的 Line 群組？',[['我就是轉發政治文的那個',{e:2}],['會已讀，偶爾回嘴',{e:1}],['直接關靜音',{e:-1}],['已經退群了',{e:-2}]]],
+  ['H2','看到立場相反的貼文，你會？',[['留言反駁到底',{e:2}],['截圖傳給朋友一起罵',{e:1}],['默默滑過',{}],['按「不感興趣」保持心情',{e:-1}]]],
+  ['H3','你參加過的政治活動？',[['造勢晚會、遊行都去過',{e:2}],['捐過小額獻金或買過周邊',{e:1}],['只有投票',{}],['投票也常常沒去',{e:-2}]]],
+  ['H4','支持的人落選了，你會？',[['發長文，難過好幾天',{e:2}],['覺得是媒體帶風向',{e:1,r:1}],['唉，四年後再來',{}],['誰當選都一樣',{e:-2}]]],
+  ['H5','你知道你們選區的議員是誰嗎？',[['知道，還有追蹤他',{e:2}],['知道名字',{e:1}],['不太確定',{e:-1}],['議員是做什麼的？',{e:-2}]]],
+  ['H6','投票日那天你會？',[['一早去投，回家盯開票到結束',{e:2}],['有空就去投',{}],['看天氣和心情',{e:-1}],['那天是連假吧',{e:-2}]]],
+  ['H7','政論節目你？',[['每天看，還會邊看邊罵',{e:2}],['有大新聞才看',{e:1}],['只看剪輯短片',{}],['從來不看',{e:-2}]]],
+  ['H8','跟家人吵過政治嗎？',[['每年過年都吵',{e:2}],['吵過一兩次',{e:1}],['會刻意避開',{}],['我們家沒人在意',{e:-2}]]]
+ ],
+ tp:[
+  ['R1','對「第三勢力」的看法？',[['台灣需要，兩黨輪流爛太久了',{r:2}],['最後都是在幫某一邊',{r:-1,e:1}],['看人，不看是第幾勢力',{}],['沒什麼看法',{e:-1}]]],
+  ['R2','你相信政治人物說的話嗎？',[['自己支持的會相信',{r:-1,e:1}],['一半一半',{}],['都不信',{r:2}],['不關心',{e:-1}]]],
+  ['R3','你心中理想的政治人物？',[['懂國際、敢跟中國嗆聲',{a:2}],['穩重、懂經濟、會跟對岸溝通',{a:-2}],['講話直白、不受政黨控制',{r:2}],['沒有理想型，都差不多',{e:-1}]]],
+  ['R4','投票時你最在意？',[['守護台灣主權和民主',{a:1,b:1,e:1}],['經濟發展和兩岸和平',{a:-1,b:-1}],['誰比較清廉能做事，黨不重要',{r:2}],['看家人投誰',{e:-1}]]],
+  ['R5','政黨輪替你怎麼看？',[['越常換越好，誰都不能做太久',{r:1}],['我支持的黨一直執政最好',{r:-1,e:1}],['換誰都一樣爛',{r:2}],['沒想過',{e:-1}]]],
+  ['R6','新政黨出來，你通常？',[['會去研究，有機會就投',{r:2}],['小黨投了也是浪費票',{r:-1}],['看候選人是誰',{}],['不會注意到',{e:-1}]]]
+ ]
+};
+const QUOTA={id:4,cn:2,pt:4,ht:3,tp:2};
+const AX=['a','b','e','r','k'];
+function shuffle(a){for(let k=a.length-1;k>0;k--){const j=Math.random()*(k+1)|0;[a[k],a[j]]=[a[j],a[k]]}return a}
+function draw(){
+  let seen=[];try{seen=JSON.parse(localStorage.getItem('pt_seen')||'[]')}catch(e){}
+  const out=[];
+  for(const cat in QUOTA){const pool=BANK[cat];
+    let fresh=pool.filter(q=>!seen.includes(q[0]));
+    if(fresh.length<QUOTA[cat]){seen=seen.filter(id=>!pool.some(q=>q[0]===id));fresh=pool.slice()}
+    out.push(...shuffle(fresh).slice(0,QUOTA[cat]))}
+  seen=[...new Set([...seen,...out.map(q=>q[0])])];try{localStorage.setItem('pt_seen',JSON.stringify(seen))}catch(e){}
+  return shuffle(out).map(([id,q,opts])=>[id,q,shuffle(opts.slice())]);
+}
+function range(qs){const R={};AX.forEach(x=>R[x]={lo:0,hi:0});qs.forEach(([,,o])=>AX.forEach(x=>{const v=o.map(z=>z[1][x]||0);R[x].lo+=Math.min(0,...v);R[x].hi+=Math.max(0,...v)}));return R}
+
+/* ---------- mascots (canvas, one style) ---------- */
+function mascot(ctx,type,cx,cy,s,col1,col2){
+  const C=ctx;C.save();C.translate(cx,cy);C.scale(s/100,s/100);C.lineJoin='round';C.lineCap='round';
+  const ink='#1c1b22',st=()=>{C.lineWidth=5;C.strokeStyle=ink;C.stroke()};
+  const face=(y,dx=16,mouth='smile',cheek='#ff9a8a')=>{
+    C.fillStyle=ink;[-dx,dx].forEach(x=>{C.beginPath();C.ellipse(x,y,5,6.5,0,0,7);C.fill()});
+    C.fillStyle='#fff';[-dx,dx].forEach(x=>{C.beginPath();C.arc(x+1.8,y-2.2,1.8,0,7);C.fill()});
+    C.fillStyle=cheek;C.globalAlpha=.7;[-dx-9,dx+9].forEach(x=>{C.beginPath();C.ellipse(x,y+10,6,3.6,0,0,7);C.fill()});C.globalAlpha=1;
+    C.beginPath();if(mouth==='smile'){C.arc(0,y+8,6,.15*Math.PI,.85*Math.PI)}else if(mouth==='flat'){C.moveTo(-5,y+12);C.lineTo(5,y+12)}else{C.arc(0,y+12,4,0,7)}
+    C.lineWidth=3.5;C.strokeStyle=ink;C.stroke()};
+  if(type==='bird'){
+    C.fillStyle='#2bb5a3';C.beginPath();C.ellipse(0,8,44,40,0,0,7);C.fill();st();
+    C.fillStyle='#bff0e8';C.beginPath();C.ellipse(0,24,26,20,0,0,7);C.fill();
+    C.fillStyle='#1f8f82';C.beginPath();C.ellipse(-40,14,14,24,-.5,0,7);C.fill();st();
+    C.fillStyle='#2bb5a3';C.beginPath();C.moveTo(-6,-30);C.quadraticCurveTo(0,-52,12,-40);C.quadraticCurveTo(4,-36,4,-30);C.fill();st();
+    face(-2,15,'none');C.fillStyle='#ffb02e';C.beginPath();C.moveTo(-7,6);C.lineTo(7,6);C.lineTo(0,15);C.closePath();C.fill();C.lineWidth=3;C.strokeStyle=ink;C.stroke();
+    C.strokeStyle='#ffb02e';C.lineWidth=5;[-12,12].forEach(x=>{C.beginPath();C.moveTo(x,46);C.lineTo(x,54);C.stroke()});
+  }else if(type==='yam'){
+    C.fillStyle='#c6603f';C.beginPath();C.moveTo(10,-50);C.bezierCurveTo(34,-40,36,-6,28,18);C.bezierCurveTo(20,40,4,52,-12,50);C.bezierCurveTo(-30,46,-30,24,-24,6);C.bezierCurveTo(-18,-14,-14,-40,10,-50);C.fill();st();
+    C.strokeStyle='#9c4129';C.lineWidth=2.5;[[-6,-24,8,-26],[-14,30,-2,34],[14,18,22,12]].forEach(([a,b,c,d])=>{C.beginPath();C.moveTo(a,b);C.lineTo(c,d);C.stroke()});
+    C.fillStyle='#6aa832';C.beginPath();C.ellipse(16,-54,6,12,.6,0,7);C.fill();st();
+    face(2,12,'smile');
+  }else if(type==='plum'){
+    for(let k=0;k<5;k++){const a=k*Math.PI*2/5-Math.PI/2;C.fillStyle='#ffd6e3';C.beginPath();C.arc(Math.cos(a)*30,Math.sin(a)*30+4,26,0,7);C.fill();st()}
+    C.fillStyle='#fff3c4';C.beginPath();C.arc(0,4,28,0,7);C.fill();st();
+    C.fillStyle='#e8a33d';for(let k=0;k<8;k++){const a=k*Math.PI/4;C.beginPath();C.arc(Math.cos(a)*36,Math.sin(a)*36+4,3,0,7);C.fill()}
+    face(2,11,'smile');
+  }else if(type==='pig'){
+    C.fillStyle='#ffb3c6';C.beginPath();C.ellipse(0,8,46,40,0,0,7);C.fill();st();
+    C.fillStyle='#ff96b0';[[-28,-28],[28,-28]].forEach(([x,y])=>{C.beginPath();C.moveTo(x-12,y+8);C.lineTo(x,y-12);C.lineTo(x+12,y+8);C.closePath();C.fill();st()});
+    C.fillStyle=ink;C.fillRect(-12,-32,24,6);
+    C.fillStyle='#ff96b0';C.beginPath();C.ellipse(0,16,14,10,0,0,7);C.fill();st();C.fillStyle=ink;[-5,5].forEach(x=>{C.beginPath();C.arc(x,16,2.6,0,7);C.fill()});
+    face(-4,18,'none');
+    C.fillStyle='#ffcc33';C.beginPath();C.arc(34,-34,10,0,7);C.fill();st();
+  }else if(type==='grass'){
+    C.fillStyle='#e0a26b';C.beginPath();C.moveTo(-30,14);C.lineTo(30,14);C.lineTo(24,52);C.lineTo(-24,52);C.closePath();C.fill();st();
+    C.fillStyle='#c98450';C.fillRect(-34,8,68,12);C.strokeRect(-34,8,68,12);
+    C.fillStyle='#7cc23f';C.beginPath();C.moveTo(0,10);C.bezierCurveTo(-50,-4,-46,-50,-4,-40);C.bezierCurveTo(-4,-20,0,0,0,10);C.fill();st();
+    C.beginPath();C.moveTo(0,10);C.bezierCurveTo(50,-4,46,-56,6,-46);C.bezierCurveTo(4,-24,0,0,0,10);C.fill();st();
+    face(34,11,'smile');
+  }else if(type==='owl'){
+    C.fillStyle='#a07c52';C.beginPath();C.ellipse(0,6,40,46,0,0,7);C.fill();st();
+    C.fillStyle='#e9d6b6';C.beginPath();C.ellipse(0,22,24,26,0,0,7);C.fill();
+    C.fillStyle='#a07c52';[-1,1].forEach(d=>{C.beginPath();C.moveTo(d*16,-34);C.lineTo(d*30,-52);C.lineTo(d*34,-28);C.closePath();C.fill();st()});
+    C.fillStyle='#fff';[-16,16].forEach(x=>{C.beginPath();C.arc(x,-10,14,0,7);C.fill();st()});
+    C.fillStyle=ink;[-16,16].forEach(x=>{C.beginPath();C.arc(x,-10,6,0,7);C.fill()});
+    C.beginPath();C.moveTo(-2,-10);C.lineTo(2,-10);C.lineWidth=4;C.stroke();
+    C.fillStyle='#ffb02e';C.beginPath();C.moveTo(-5,2);C.lineTo(5,2);C.lineTo(0,10);C.closePath();C.fill();C.lineWidth=3;C.stroke();
+    C.strokeStyle=ink;C.lineWidth=3;C.beginPath();C.moveTo(-10,18);C.lineTo(-4,22);C.moveTo(10,18);C.lineTo(4,22);C.stroke();
+  }else if(type==='panda'){
+    C.fillStyle=ink;[-30,30].forEach(x=>{C.beginPath();C.arc(x,-30,14,0,7);C.fill()});
+    C.fillStyle='#fff';C.beginPath();C.ellipse(0,6,44,40,0,0,7);C.fill();st();
+    C.fillStyle=ink;[-16,16].forEach(x=>{C.beginPath();C.ellipse(x,0,11,14,x<0?.5:-.5,0,7);C.fill()});
+    C.fillStyle='#fff';[-14,14].forEach(x=>{C.beginPath();C.arc(x,-2,4,0,7);C.fill()});
+    C.fillStyle='#ff8ab8';C.globalAlpha=.8;[-30,30].forEach(x=>{C.beginPath();C.ellipse(x,16,8,5,0,0,7);C.fill()});C.globalAlpha=1;
+    C.fillStyle=ink;C.beginPath();C.ellipse(0,14,5,3.5,0,0,7);C.fill();C.lineWidth=3;C.strokeStyle=ink;C.beginPath();C.arc(0,18,5,.2*Math.PI,.8*Math.PI);C.stroke();
+    C.fillStyle='#ff5a9a';C.beginPath();C.moveTo(24,-44);C.lineTo(40,-52);C.lineTo(36,-36);C.closePath();C.fill();C.beginPath();C.moveTo(24,-44);C.lineTo(14,-58);C.lineTo(30,-56);C.closePath();C.fill();
+  }else if(type==='cham'){
+    const c1=col1||'#3d6fc4',c2=col2||'#2f9e6e';
+    C.strokeStyle=ink;C.lineWidth=5;C.fillStyle=c1;C.beginPath();C.arc(30,36,14,Math.PI*.9,Math.PI*2.6);C.lineWidth=12;C.strokeStyle=c1;C.stroke();
+    C.lineWidth=5;C.strokeStyle=ink;
+    C.fillStyle=c1;C.beginPath();C.ellipse(0,12,44,34,0,0,7);C.fill();st();
+    C.fillStyle=c2;[[-18,14],[2,20],[22,12],[-6,0],[14,-2]].forEach(([x,y])=>{C.beginPath();C.arc(x,y,7,0,7);C.fill()});
+    C.fillStyle=c1;C.beginPath();C.moveTo(-36,-10);C.quadraticCurveTo(-30,-48,0,-44);C.quadraticCurveTo(26,-42,30,-14);C.closePath();C.fill();st();
+    C.fillStyle=c2;C.beginPath();C.moveTo(-10,-44);C.lineTo(0,-58);C.lineTo(10,-44);C.closePath();C.fill();st();
+    C.fillStyle='#fff';[-14,14].forEach(x=>{C.beginPath();C.arc(x,-20,11,0,7);C.fill();st()});
+    C.fillStyle=ink;C.beginPath();C.arc(-11,-20,4.5,0,7);C.fill();C.beginPath();C.arc(17,-23,4.5,0,7);C.fill();
+    C.lineWidth=3.5;C.beginPath();C.arc(0,-6,8,.15*Math.PI,.85*Math.PI);C.stroke();
+  }else if(type==='sloth'){
+    C.strokeStyle='#6b4a2a';C.lineWidth=10;C.beginPath();C.moveTo(-56,-46);C.lineTo(56,-46);C.stroke();
+    C.fillStyle='#a8a097';C.beginPath();C.ellipse(0,8,40,40,0,0,7);C.fill();st();
+    C.fillStyle='#a8a097';[-26,26].forEach(x=>{C.beginPath();C.ellipse(x,-26,9,22,x<0?.3:-.3,0,7);C.fill();st()});
+    C.fillStyle='#efe6d8';C.beginPath();C.ellipse(0,6,30,24,0,0,7);C.fill();
+    C.fillStyle='#5e544a';[-12,12].forEach(x=>{C.beginPath();C.ellipse(x,4,11,7,x<0?-.4:.4,0,7);C.fill()});
+    C.strokeStyle='#fff';C.lineWidth=3;[-12,12].forEach(x=>{C.beginPath();C.arc(x,4,4,.1*Math.PI,.9*Math.PI);C.stroke()});
+    C.fillStyle=ink;C.beginPath();C.ellipse(0,14,4,3,0,0,7);C.fill();
+    C.strokeStyle=ink;C.lineWidth=3;C.beginPath();C.arc(0,18,5,.2*Math.PI,.8*Math.PI);C.stroke();
+    C.font='700 16px sans-serif';C.fillStyle=ink;C.fillText('z',30,-6);C.font='700 11px sans-serif';C.fillText('z',40,-16);
+  }
+  C.restore();
+}
+function mini(t,size){const T=TYPES[t],c=document.createElement('canvas'),d=Math.min(2,devicePixelRatio||1);c.width=c.height=size*d;const x=c.getContext('2d');x.scale(d,d);mascot(x,T.m,size/2,size/2+size*.04,size*.42,T.hex,T.hex2);return c}
+
+/* ---------- audio (plays in iOS silent mode) + fx ---------- */
+let ac=null,master=null,bgmG=null,sfxG=null,nb=null,unlockEl=null,muted=false,seq=null;
+try{muted=localStorage.getItem('pt_mute')==='1'}catch(e){}
+function silentWav(){const n=4000,b=new ArrayBuffer(44+n),v=new DataView(b);let o=0;
+  const w=t=>{for(const c of t)v.setUint8(o++,c.charCodeAt(0))},u32=x=>{v.setUint32(o,x,true);o+=4},u16=x=>{v.setUint16(o,x,true);o+=2};
+  w('RIFF');u32(36+n);w('WAVE');w('fmt ');u32(16);u16(1);u16(1);u32(8000);u32(8000);u16(1);u16(8);w('data');u32(n);for(let k=0;k<n;k++)v.setUint8(o++,128);
+  return URL.createObjectURL(new Blob([b],{type:'audio/wav'}))}
+function initAudio(){
+  try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}
+  try{if(!unlockEl){unlockEl=new Audio(silentWav());unlockEl.loop=true;unlockEl.setAttribute('playsinline','')}unlockEl.play().catch(()=>{})}catch(e){}
+  if(ac){ac.resume&&ac.resume();return}
+  try{ac=new (window.AudioContext||window.webkitAudioContext)();master=ac.createGain();master.gain.value=muted?0:1;master.connect(ac.destination);
+    bgmG=ac.createGain();bgmG.gain.value=.35;bgmG.connect(master);sfxG=ac.createGain();sfxG.connect(master);
+    nb=ac.createBuffer(1,ac.sampleRate,ac.sampleRate);const d=nb.getChannelData(0);for(let k=0;k<d.length;k++)d[k]=Math.random()*2-1}catch(e){ac=null}}
+function tone(f,d,t='triangle',v=.06,at=0,dest,slide){if(!ac)return;const s=at>10?at:ac.currentTime+at,o=ac.createOscillator(),g=ac.createGain();o.type=t;o.frequency.setValueAtTime(f,s);if(slide)o.frequency.exponentialRampToValueAtTime(slide,s+d);
+  g.gain.setValueAtTime(v,s);g.gain.exponentialRampToValueAtTime(.0001,s+d);o.connect(g).connect(dest||sfxG);o.start(s);o.stop(s+d+.02)}
+function noise(d,v,f,at=0,dest,type='bandpass'){if(!ac)return;const s=at>10?at:ac.currentTime+at,src=ac.createBufferSource(),fl=ac.createBiquadFilter(),g=ac.createGain();src.buffer=nb;fl.type=type;fl.frequency.value=f;
+  g.gain.setValueAtTime(v,s);g.gain.exponentialRampToValueAtTime(.0001,s+d);src.connect(fl).connect(g).connect(dest||sfxG);src.start(s);src.stop(s+d+.02)}
+const mtof=m=>440*Math.pow(2,(m-69)/12);
+const sfx={
+  pick(n){tone(mtof(64+(n%8)*2),.09,'square',.05);tone(mtof(71+(n%8)*2),.12,'triangle',.05,.05)},
+  whoosh(){noise(.18,.12,2400,0,null,'highpass')},
+  back(){tone(420,.1,'triangle',.06,0,null,260)},
+  drum(){if(!ac)return;for(let k=0;k<22;k++)noise(.05,.05+k*.006,180+k*10,k*.065,null,'lowpass');tone(70,.3,'sine',.3,1.45)},
+  reveal(){[60,64,67,72,76,79,84].forEach((m,k)=>{tone(mtof(m),.25,'square',.05,k*.07);tone(mtof(m-12),.25,'triangle',.06,k*.07)});noise(.9,.12,1500,.3)},
+  start(){[67,72,76].forEach((m,k)=>tone(mtof(m),.14,'square',.05,k*.08))}
+};
+const CH=[[57,60,64],[53,57,60],[60,64,67],[55,59,62]];
+function bgmStart(){if(!ac||seq)return;let st=0,nt=ac.currentTime+.05;const dt=60/86/4;
+  seq=setInterval(()=>{while(nt<ac.currentTime+.12){const bar=(st/16|0)%4,c=CH[bar];
+    if(st%16===0||st%16===10)tone(55,.25,'sine',.35,nt,bgmG,40);
+    if(st%16===4||st%16===12)noise(.12,.12,2000,nt,bgmG);
+    if(st%2===0)noise(.025,.04,9000,nt,bgmG,'highpass');
+    if(st%16===0)c.forEach(m=>tone(mtof(m),dt*14,'sine',.04,nt,bgmG));
+    if(st%4===2)tone(mtof(c[(st/4|0)%3]+12),dt*1.5,'triangle',.035,nt,bgmG);
+    nt+=dt;st++}},25)}
+function setMute(m){muted=m;try{localStorage.setItem('pt_mute',m?'1':'0')}catch(e){}if(master)master.gain.setTargetAtTime(m?0:1,ac.currentTime,.02);
+  muteBtn.innerHTML=m?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M17 9l5 6M22 9l-5 6"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg>'}
+const muteBtn=document.createElement('button');muteBtn.className='mute';muteBtn.id='muteBtn';muteBtn.setAttribute('aria-label','聲音開關');document.body.appendChild(muteBtn);
+muteBtn.onclick=()=>{initAudio();setMute(!muted);bgmStart()};setMute(muted);
+const fxl=document.createElement('div');fxl.className='fxl';document.body.appendChild(fxl);
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function confetti(cols,n=90){if(reduce)return;for(let k=0;k<n;k++){const e=document.createElement('i');e.className='cf';e.style.left=Math.random()*100+'vw';e.style.background=cols[k%cols.length];
+  e.style.setProperty('--x',(Math.random()*160-80)+'px');e.style.setProperty('--r',(Math.random()*900-450)+'deg');e.style.setProperty('--d',(1.4+Math.random()*1.4)+'s');e.style.animationDelay=Math.random()*.3+'s';fxl.appendChild(e);setTimeout(()=>e.remove(),3300)}}
+function burst(el,col){if(reduce)return;const r=el.getBoundingClientRect();for(let k=0;k<10;k++){const e=document.createElement('i');e.className='sp';const a=Math.random()*6.28,d=30+Math.random()*40;
+  e.style.left=(r.left+r.width*(.2+Math.random()*.6))+'px';e.style.top=(r.top+r.height/2)+'px';e.style.background=col;e.style.setProperty('--dx',Math.cos(a)*d+'px');e.style.setProperty('--dy',Math.sin(a)*d+'px');fxl.appendChild(e);setTimeout(()=>e.remove(),600)}}
+
+/* ---------- flow ---------- */
+let i=0,ans=[],QS=[];
+function intro(){
+  app.innerHTML=`<h1>你是<em>什麼顏色</em>的台灣人？</h1>
+  <p class="lead">15 題，從深藍到深綠、藍皮綠骨到小粉紅，測出你在台灣政治光譜上的顏色，拿一張專屬綽號卡。題庫 38 題，每次抽的題目和順序都不一樣。十種顏色都會被吐槽，公平起見，大家一起痛。</p>
+  <div class="spec" id="spec"></div>
+  <div class="mascots" id="ms"></div>
+  <button class="btn" id="go">開始測驗</button>
+  <p class="note">純屬娛樂，不是科學分類，也不代表任何政黨。作答只在你的手機上計算，不會上傳或記錄。</p>`;
+  const ms=document.getElementById('ms');ORDER.forEach((t,k)=>{const c=mini(t,64);c.style.animationDelay=k*.06+'s';c.className='pop';ms.appendChild(c)});
+  document.getElementById('spec').innerHTML=ORDER.map(t=>`<span style="background:${TYPES[t].hex2?`linear-gradient(135deg,${TYPES[t].hex} 50%,${TYPES[t].hex2} 50%)`:TYPES[t].hex}">${TYPES[t].color}</span>`).join('');
+  document.getElementById('go').onclick=()=>{initAudio();bgmStart();sfx.start();QS=draw();i=0;ans=[];question()};
+}
+function orbColor(){if(!ans.length)return'#c9c4bb';const n=score();const t=classifyN(n);return TYPES[t].hex}
+function question(){
+  const [,q,opts]=QS[i];
+  app.innerHTML=`<div class="prog"><span class="orb" id="orb" style="background:${orbColor()}"></span><span>${i+1} / ${QS.length}</span><span class="trk"><i style="width:${i/QS.length*100}%"></i></span></div>
+  <p class="orbtxt">${ans.length?'你的顏色正在變化…':'你的顏色還沒決定'}</p>
+  <div class="qwrap" id="qw"><p class="q">${q}</p><div class="opts">${opts.map((o,k)=>`<button class="opt" data-k="${k}"><b>${'ABCDE'[k]}</b><span>${o[0]}</span></button>`).join('')}</div></div>
+  ${i?'<button class="back" id="back">← 上一題</button>':''}`;
+  app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+    ans[i]=+b.dataset.k;sfx.pick(i);burst(b,orbColor());b.classList.add('chosen');
+    app.querySelectorAll('.opt').forEach(x=>x.disabled=true);
+    setTimeout(()=>{sfx.whoosh();i++;i<QS.length?question():reveal();window.scrollTo({top:0})},reduce?0:260)});
+  const bk=document.getElementById('back');if(bk)bk.onclick=()=>{sfx.back();i--;ans.length=i;question()};
+}
+function score(){
+  const n=Math.min(ans.length,QS.length),sub=QS.slice(0,n),raw={a:0,b:0,e:0,r:0,k:0};
+  ans.slice(0,n).forEach((k,j)=>{const w=QS[j][2][k][1];for(const x in w)raw[x]+=w[x]});
+  const R=range(sub),nz=x=>raw[x]>=0?(R[x].hi?raw[x]/R[x].hi:0):(R[x].lo?-raw[x]/R[x].lo:0);
+  return{a:nz('a'),b:nz('b'),r:nz('r'),k:R.k.hi?raw.k/R.k.hi:0,e:(R.e.hi-R.e.lo)?(raw.e-R.e.lo)/(R.e.hi-R.e.lo):.5,raw};
+}
+function classifyN(s){
+  if(s.e<=.18)return'gray';
+  if(s.k>=.55||(s.k>=.4&&s.a<=-.4))return'pink';
+  if(s.r>=.6&&Math.abs(s.b)<=.35)return'white';
+  if(s.b<=-.4&&s.a>=.2)return'bskin';
+  if(s.b>=.4&&s.a<=-.15)return'gskin';
+  const v=s.a*.65+s.b*.35;
+  if(v>=.7)return'dgreen';if(v>=.2)return'lgreen';if(v<=-.7)return'dblue';if(v<=-.2)return'lblue';return'mid';
+}
+const specPos=s=>Math.max(.03,Math.min(.97,.5+(s.a*.65+s.b*.35)/2-(s.k>=.55?.12:0)));
+function reveal(){
+  app.innerHTML=`<div class="calc"><div class="wheel" id="wheel"></div><p class="calctxt" id="ct">分析你的政治顏色中…</p></div>`;
+  const w=document.getElementById('wheel');w.style.background=`conic-gradient(${ORDER.map(t=>TYPES[t].hex).join(',')},${TYPES[ORDER[0]].hex})`;
+  sfx.drum();const lines=['比對 38 題題庫…','計算藍綠濃度…','偵測小粉紅成分…','顏色出爐！'];
+  lines.forEach((l,k)=>setTimeout(()=>{const ct=document.getElementById('ct');if(ct)ct.textContent=l},k*380));
+  setTimeout(result,reduce?0:1550);
+}
+function wrap(ctx,text,x,y,maxW,lh){let line='',yy=y;for(const ch of text){const t=line+ch;if(ctx.measureText(t).width>maxW&&line){ctx.fillText(line,x,yy);line=ch;yy+=lh}else line=t}ctx.fillText(line,x,yy);return yy+lh}
+function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
+function drawCard(type,s){
+  const T=TYPES[type],W=1080,H=1350,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  const F='"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif';
+  x.fillStyle='#1c1b22';rr(x,0,0,W,H,56);x.fill();
+  if(T.hex2){const g=x.createLinearGradient(0,0,W,H);g.addColorStop(.5,T.hex);g.addColorStop(.5,T.hex2);x.fillStyle=g}else x.fillStyle=T.hex;
+  rr(x,24,24,W-48,H-48,40);x.fill();
+  x.fillStyle='#ffffff18';for(let yy=40;yy<540;yy+=26)for(let xx=40;xx<W-40;xx+=26){x.beginPath();x.arc(xx+(yy/26%2)*13,yy,4,0,7);x.fill()}
+  x.fillStyle='#fff';x.font=`700 34px ${F}`;x.fillText('台灣政治顏色卡',72,98);
+  x.textAlign='right';x.font=`700 30px ${F}`;x.fillText('No.'+String(ORDER.indexOf(type)+1).padStart(2,'0'),W-72,98);x.textAlign='left';
+  x.fillStyle='#fff';rr(x,72,130,W-144,400,28);x.fill();x.lineWidth=6;x.strokeStyle='#1c1b22';x.stroke();
+  x.fillStyle=T.hex+'22';x.beginPath();x.arc(W/2,330,170,0,7);x.fill();
+  mascot(x,T.m,W/2,335,215,T.hex,T.hex2);
+  /* color chip + nickname */
+  x.font=`900 52px ${F}`;const cw=x.measureText(T.color).width+56;
+  x.fillStyle='#fff';rr(x,72,568,cw,80,40);x.fill();x.fillStyle=T.hex2||T.hex;x.fillText(T.color,100,627);
+  x.fillStyle='#fff';x.font=`900 104px ${F}`;x.fillText(T.name,72+cw+28,640);
+  x.font=`700 38px ${F}`;x.fillStyle='#ffffffe6';x.fillText(T.tag,76,710);
+  /* traits */
+  x.fillStyle='#fff';rr(x,72,745,W-144,300,24);x.fill();
+  x.fillStyle='#1c1b22';x.font=`500 33px ${F}`;let y=805;
+  T.traits.forEach(t=>{x.fillStyle=T.hex;x.beginPath();x.arc(100,y-12,9,0,7);x.fill();x.fillStyle='#1c1b22';y=wrap(x,t,124,y,W-230,44)+6});
+  x.font=`900 32px ${F}`;x.fillStyle=T.hex;x.fillText('口頭禪',100,y+14);x.fillStyle='#1c1b22';x.font=`700 32px ${F}`;wrap(x,'「'+T.quote+'」',220,y+14,W-310,42);
+  /* spectrum bar */
+  const bx=76,bw=W-152,by=1100;const g2=x.createLinearGradient(bx,0,bx+bw,0);
+  g2.addColorStop(0,'#e2669b');g2.addColorStop(.12,'#1f3f8f');g2.addColorStop(.32,'#6b93d6');g2.addColorStop(.5,'#d9d6cf');g2.addColorStop(.68,'#8fcf8a');g2.addColorStop(1,'#147a4c');
+  x.fillStyle='#1c1b2233';rr(x,bx-6,by-6,bw+12,44,22);x.fill();x.fillStyle=g2;rr(x,bx,by,bw,32,16);x.fill();
+  const px=bx+bw*specPos(s);x.fillStyle='#fff';x.beginPath();x.arc(px,by+16,24,0,7);x.fill();x.lineWidth=7;x.strokeStyle='#1c1b22';x.stroke();
+  x.font=`700 26px ${F}`;x.fillStyle='#fff';x.fillText('統',bx,by+78);x.textAlign='center';x.fillText('中間',bx+bw/2,by+78);x.textAlign='right';x.fillText('獨',bx+bw,by+78);
+  x.textAlign='left';x.font=`700 30px ${F}`;x.fillText('天敵：'+T.enemy,76,1262);
+  x.textAlign='right';x.font=`700 28px ${F}`;x.fillStyle='#ffffffcc';x.fillText('你是什麼顏色？',W-76,1262);x.textAlign='left';
+  return c;
+}
+function result(){
+  const s=score(),type=classifyN(s),T=TYPES[type];
+  sfx.reveal();setTimeout(()=>confetti([T.hex,T.hex2||'#ffffff','#ffcc33',T.hex]),150);
+  const pc=v=>Math.max(4,Math.min(96,v));
+  const SITE=/github\.io$|^(?!.*claude).*\.(com|tw|net|app)$/.test(location.hostname)&&location.protocol.startsWith('http')?location.origin+location.pathname:'';
+  const lean=v=>v>=.5?'偏綠':v>=.15?'微綠':v<=-.5?'偏藍':v<=-.15?'微藍':'不偏';
+  const heat=s.e>=.7?'熱血':s.e>=.4?'普通':'冷感';
+  const hooks=['測完被說中，有點痛','十種顏色裡我是這個，不意外','結果出來我沉默了','朋友說我就是這種人'];
+  const VARIANTS={
+    full:()=>`我是「${T.color}・${T.name}」🎨 ${T.tag}\n口頭禪：「${T.quote}」\n你是什麼顏色？👇${SITE?'\n'+SITE:''}\n#政治顏色卡`,
+    short:()=>`${pick(hooks)}。我是「${T.color}・${T.name}」：${T.tag}。\n你是什麼顏色？${SITE?'\n'+SITE:''}`,
+    tag:()=>`我測出來是「${T.color}・${T.name}」，口頭禪是「${T.quote}」😂\n我覺得 @_____ 一定是「${TYPES[ORDER[(ORDER.indexOf(type)+5)%ORDER.length]].color}・${TYPES[ORDER[(ORDER.indexOf(type)+5)%ORDER.length]].name}」，來測測看${SITE?'\n'+SITE:''}`
+  };
+  const pick=a=>a[Math.random()*a.length|0];
+  let variant='full',share=VARIANTS.full();
+  app.innerHTML=`<p class="lead" style="margin:0">你的政治顏色卡</p><p class="bigname" style="color:${T.hex2||T.hex}">${T.color}・${T.name}</p>
+  <img class="cardimg" id="card" alt="${T.color}・${T.name}：${T.tag}">
+  <p class="save">手機長按卡片就能存圖，直接發 Threads</p>
+  <div class="axes">
+    <div class="ax"><b>國家認同光譜</b><div class="ends"><span>在台灣的中國人</span><span>中華民國台灣</span><span>台灣國的台灣人</span></div><div class="trk"><span class="dot" style="left:${pc(50+s.a*48)}%"></span></div></div>
+    <div class="ax"><b>政黨傾向</b><div class="ends"><span>國民黨</span><span>不分</span><span>民進黨</span></div><div class="trk"><span class="dot" style="left:${pc(50+s.b*48)}%"></span></div></div>
+    <div class="ax"><b>政治熱度</b><div class="ends"><span>冷感</span><span>熱血</span></div><div class="trk e"><span class="dot" style="left:${pc(s.e*100)}%"></span></div></div>
+    <div class="ax"><b>反兩黨指數</b><div class="ends"><span>還是相信政黨</span><span>兩黨都爛</span></div><div class="trk r"><span class="dot" style="left:${pc(50+s.r*48)}%"></span></div></div>
+  </div>
+  <section class="sharebox">
+    <div class="shead"><b>分享文案</b><div class="vtabs" id="vtabs"><button data-v="full" aria-pressed="true">標準</button><button data-v="short" aria-pressed="false">一句話</button><button data-v="tag" aria-pressed="false">標記朋友</button></div></div>
+    <textarea id="shareText" rows="9" aria-label="分享文案，可以直接修改"></textarea>
+    <p class="hint">可以直接改文字再複製。發 Threads 時記得附上你的卡片圖。</p>
+    <div class="srow"><button class="btn" id="copy">複製文案</button><button class="btn ghost" id="nshare" hidden>分享到…</button></div>
+    <p class="toast" id="toast" role="status" aria-live="polite"></p>
+  </section>
+  <button class="btn ghost" id="again">再測一次（換一組題目）</button>
+  <h2>全部十種顏色</h2><div class="gal" id="gal"></div>
+  <p class="note">純屬娛樂，結果只依你的作答計算，不會上傳。每一型都被吐槽到同樣程度，請笑著轉發。</p>`;
+  const img=document.getElementById('card');
+  const paint=()=>{img.src=drawCard(type,s).toDataURL('image/png')};
+  (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(paint);paint();
+  const gal=document.getElementById('gal');
+  ORDER.forEach(t=>{const d=document.createElement('div');d.className='gi'+(t===type?' me':'');d.appendChild(mini(t,56));
+    const tx=document.createElement('div');tx.innerHTML=`<b style="color:${TYPES[t].hex2||TYPES[t].hex}">${TYPES[t].color}・${TYPES[t].name}</b>${t===type?'　← 你':''}<span>${TYPES[t].tag}・「${TYPES[t].quote}」</span>`;d.appendChild(tx);gal.appendChild(d)});
+  document.getElementById('again').onclick=()=>{sfx.start();QS=draw();i=0;ans=[];question();window.scrollTo({top:0})};
+  const ta=document.getElementById('shareText'),toast=document.getElementById('toast'),cb=document.getElementById('copy');
+  ta.value=share;
+  const say=t=>{toast.textContent=t;toast.classList.remove('on');void toast.offsetWidth;toast.classList.add('on')};
+  document.querySelectorAll('#vtabs button').forEach(b=>b.onclick=()=>{variant=b.dataset.v;ta.value=VARIANTS[variant]();sfx.pick(3);
+    document.querySelectorAll('#vtabs button').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'))});
+  cb.onclick=()=>{const t=ta.value;
+    const fb=()=>{ta.focus();ta.select();ta.setSelectionRange(0,t.length);try{if(document.execCommand('copy')){done();return}}catch(e){}say('已幫你全選，長按文字選「拷貝」')};
+    const done=()=>{cb.textContent='已複製 ✓';sfx.pick(6);say('文案已複製，去 Threads 貼上吧');setTimeout(()=>cb.textContent='複製文案',1800)};
+    try{navigator.clipboard.writeText(t).then(done,fb)}catch(e){fb()}};
+  /* native share sheet (works on the public site; hidden where the viewer blocks it) */
+  const ns=document.getElementById('nshare');
+  if(SITE&&navigator.share){ns.hidden=false;
+    ns.onclick=async()=>{try{const blob=await (await fetch(img.src)).blob(),file=new File([blob],'政治顏色卡.png',{type:'image/png'});
+      if(navigator.canShare&&navigator.canShare({files:[file]}))await navigator.share({files:[file],text:ta.value});else await navigator.share({text:ta.value,url:SITE})}catch(e){}}}
+
+}
+intro();
+})();
+</script>
+</body>
+</html>
